@@ -1,0 +1,10 @@
+{
+  "name": "MultiSelectDelete",
+  "version": "1.0.0",
+  "title": "Multi Select Delete",
+  "description": "Select an area for deconstruction.... FIXME",
+  "author": "Tyler Wafkowski & Devin Johnson",
+  "homepage": "https://github.com/tdwaf/MultiSelect-Delete",
+  "factorio_version": "1.1.81",
+  "dependencies": ["base"]
+}
