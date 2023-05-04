@@ -10,8 +10,8 @@ local function on_player_selected_area(event)
         -- Get euclidean distance from player to entity
         d = euclidean_distance(entity.position.x, entity.position.y, player.position.x, player.position.y)
 
-        -- If entity is more than 2 * reach away, raise error
-        if d >= 2*player.reach_distance then
+        -- If entity is outside of player reach, raise error
+        if d > player.reach_distance then
             player.print("Item is too far!") -- Need a way for this to access localization file isntead of harcoded
         -- Otherwise mine it
         else
