@@ -14,16 +14,17 @@ local function on_player_selected_area(event)
 
         -- If entity is outside of player reach, raise error
         if d > player.reach_distance then
-            player.print("Item is too far!") -- Need a way for this to access localization file isntead of harcoded
+            player.print{"msd.too_far"} -- Need a way for this to access localization file isntead of harcoded
         -- Otherwise mine it (force mining, even if inventory full)
         else
-            local main_frame = screen_element.add{type='frame', name="msd_main_frame", caption={msd.test_message}}
+            local main_frame = screen_element.add{type='frame', name="msd_main_frame", caption={"msd.test_message"}}
             main_frame.style.size = {385, 165}
             main_grame.auto_center = true
 
             local content_frame = main_frame.add{type="frame", name="content_frame", direction="vertical", style="msd_content_frame"}
             local controls_flow = content_frame.add{type="flow", name="controls_flow", direction="horizontal", style="msd_controls_flow"}
-            controls_flow.add{type="button", name="ugg_controls_toggle", caption={"msd.deactivate"}}
+            controls_flow.add{type="label", name="msd_alert_message", caption={"msd.mine_alert"}}
+            controls_flow.add{type="button", name="msd_controls_toggle", caption={"msd.deny"}}
 
 
             script.on_event(defines.events.on_gui_click, function(event)
@@ -32,7 +33,7 @@ local function on_player_selected_area(event)
                     player_global.controls_active = not player_global.controls_active
             
                     local control_toggle = event.element
-                    control_toggle.caption = (player_global.controls_active) and {"msd.deactivate"} or {"msd.activate"}
+                    control_toggle.caption = (player_global.controls_active) and {"msd.deny"} or {"msd.approve"}
                 end
             end)
             -- player.mine_entity(entity, true)
