@@ -27,7 +27,7 @@ local function on_player_selected_area(event)
 
 
             script.on_event(defines.events.on_gui_click, function(event)
-                if event.element.name == "ugg_controls_toggle" then
+                if event.element.name == "msd_controls_toggle" then
                     local player_global = global.players[event.player_index]
                     player_global.controls_active = not player_global.controls_active
             
