@@ -13,7 +13,7 @@ local function on_player_selected_area(event)
         -- If entity is outside of player reach, raise error
         if d > player.reach_distance then
             player.print("Item is too far!") -- Need a way for this to access localization file isntead of harcoded
-        -- Otherwise mine it
+        -- Otherwise mine it (force mining, even if inventory full)
         else
             player.mine_entity(entity, true)
         end
