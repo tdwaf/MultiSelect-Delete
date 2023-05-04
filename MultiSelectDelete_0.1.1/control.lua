@@ -1,5 +1,32 @@
-function euclidean_distance(x1, y1, x2, y2)
+local function euclidean_distance(x1, y1, x2, y2)
 	return math.sqrt((x2-x1)^2 + (y2-y1)^2)
+end
+
+local function handle_gui(player)
+    -- Adding gui frame and title
+    local main_frame = screen_element.add{type='frame', name="msd_main_frame", caption={"msd.test_message"}}
+    main_frame.style.size = {385, 165}
+    main_grame.auto_center = true
+
+    -- Adding content in main frame 
+    local content_frame = main_frame.add{type="frame", name="content_frame", direction="vertical", style="msd_content_frame"}
+    local controls_flow = content_frame.add{type="flow", name="controls_flow", direction="horizontal", style="msd_controls_flow"}
+    controls_flow.add{type="label", name="msd_alert_message", caption={"msd.mine_alert"}}
+    controls_flow.add{type="button", name="msd_controls_toggle", caption={"msd.deny"}}
+
+    -- TODO: Add approve and deny button for mining
+    script.on_event(defines.events.on_gui_click, function(event)
+        if event.element.name == "msd_controls_toggle" then
+            local player_global = global.players[event.player_index]
+            player_global.controls_active = not player_global.controls_active
+    
+            local control_toggle = event.element
+            control_toggle.caption = (player_global.controls_active) and {"msd.deny"} or {"msd.approve"}
+
+            -- TODO: If user approves mining, then mine entity
+            -- player.mine_entity(entity, true)
+        end
+    end)
 end
 
 local function on_player_selected_area(event)
@@ -17,26 +44,7 @@ local function on_player_selected_area(event)
             player.print{"msd.too_far"} -- Need a way for this to access localization file isntead of harcoded
         -- Otherwise mine it (force mining, even if inventory full)
         else
-            local main_frame = screen_element.add{type='frame', name="msd_main_frame", caption={"msd.test_message"}}
-            main_frame.style.size = {385, 165}
-            main_grame.auto_center = true
-
-            local content_frame = main_frame.add{type="frame", name="content_frame", direction="vertical", style="msd_content_frame"}
-            local controls_flow = content_frame.add{type="flow", name="controls_flow", direction="horizontal", style="msd_controls_flow"}
-            controls_flow.add{type="label", name="msd_alert_message", caption={"msd.mine_alert"}}
-            controls_flow.add{type="button", name="msd_controls_toggle", caption={"msd.deny"}}
-
-
-            script.on_event(defines.events.on_gui_click, function(event)
-                if event.element.name == "msd_controls_toggle" then
-                    local player_global = global.players[event.player_index]
-                    player_global.controls_active = not player_global.controls_active
-            
-                    local control_toggle = event.element
-                    control_toggle.caption = (player_global.controls_active) and {"msd.deny"} or {"msd.approve"}
-                end
-            end)
-            -- player.mine_entity(entity, true)
+            handle_gui(player)
         end
     end
 end
@@ -53,5 +61,5 @@ local function handle_shortcut(event)
     script.on_event(defines.events.on_player_selected_area, on_player_selected_area)
 end
 
+-- If shortcut is hit, handle event
 script.on_event("shortcut", handle_shortcut)
-
