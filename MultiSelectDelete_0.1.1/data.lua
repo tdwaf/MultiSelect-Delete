@@ -37,7 +37,13 @@ styles["msd_content_frame"] = {
   vertically_stretchable = "on"
 }
 
-styles["msd_controls_flow"] = {
+styles["msd_mining_alert_message"] = {
+  type = "horizontal_flow_style",
+  vertical_align = "center",
+  horizontal_spacing = 16
+}
+
+styles["msd_mining_toggle_button"] = {
   type = "horizontal_flow_style",
   vertical_align = "center",
   horizontal_spacing = 16
