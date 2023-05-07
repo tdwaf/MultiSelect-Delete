@@ -6,8 +6,23 @@ local function euclidean_distance(x1, y1, x2, y2)
 	return math.sqrt((x2-x1)^2 + (y2-y1)^2)
 end
 
-local function handle_gui(player, screen_element, isMineable)
+local function clear_gui(player)
+    local main_frame = player.gui.screen.msd_main_frame
+
+    main_frame.destroy()
+end
+
+local function mine_area(player, selection_event)
+    clear_gui(player)
+
+    for key, entity in pairs(player.surface.find_entities_filtered{area=selection_event.area}) do
+            player.mine_entity(entity, true)
+    end
+end
+
+local function handle_gui(player, selection_event)
     -- Adding gui frame and title
+    local screen_element = player.gui.screen
     local main_frame = screen_element.add{type='frame', name="msd_main_frame", caption={"msd.test_message"}}
     main_frame.style.size = {385, 165}
     main_frame.auto_center = true
@@ -18,49 +33,37 @@ local function handle_gui(player, screen_element, isMineable)
     local mining_toggle_button = content_frame.add{type="flow", name="mining_toggle_button", direction="horizontal", style="msd_mining_toggle_button"}
 
     mining_alert_message.add{type="label", name="msd_alert_message", caption={"msd.mine_alert"}}
-    mining_toggle_button.add{type="button", name="msd_controls_toggle", caption={"msd.confirm"}}
-
-    -- TODO: Add approve and deny button for mining
+    mining_toggle_button.add{type="button", name="msd_approve_button", caption={"msd.confirm"}}
+    mining_toggle_button.add{type="button", name="msd_deny_button", caption={"msd.deny"}}
+    
     script.on_event(defines.events.on_gui_click, function(event)
-        if event.element.name == "msd_controls_toggle" then
+        if event.element.name == "msd_approve_button" then
             local player_global = global.players[event.player_index]
             player_global.controls_active = not player_global.controls_active
-    
-            local control_toggle = event.element
-            control_toggle.caption = (player_global.controls_active) and {"msd.deny"} or {"msd.confirm"}
 
-            if isMineable then
-                player.print("YOU CAN MINE")
-            -- player.mine_entity(entity, true)
-            end
+            mine_area(player, selection_event)
+            return
+        end
+
+        if event.element.name == "msd_deny_button" then
+            clear_gui(player)
         end
     end)
+
 end
 
 local function on_player_selected_area(event)
-    local isMineable = false
-    local isTooFar = false
-
     local player = game.players[event.player_index]
     global.players[player.index] = { controls_active = true }
-    local screen_element = player.gui.screen
+    local selection_area = event.area
 
-    for key, entity in pairs(player.surface.find_entities_filtered{area=event.area}) do
-        -- Get euclidean distance from player to entity
-        d = euclidean_distance(entity.position.x, entity.position.y, player.position.x, player.position.y)
-
-        -- If entity is outside of player reach, raise error
-        if d > player.reach_distance then
-            player.print{"msd.too_far"} -- Need a way for this to access localization file isntead of harcoded
-            isTooFar = true
-        -- Otherwise mine it (force mining, even if inventory full)
-        else
-            isMineable = true
-        end
-    end
-
-    if not isTooFar then
-        handle_gui(player, screen_element, isMineable)
+    local distance = euclidean_distance(selection_area.right_bottom.x, selection_area.left_top.x, selection_area.right_bottom.y, selection_area.left_top.y)
+    if distance > player.reach_distance then
+        player.print{"msd.too_far"}
+        return
+    else
+        handle_gui(player, event)
+    return
     end
 end
 
