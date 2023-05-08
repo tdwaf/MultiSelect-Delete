@@ -58,12 +58,19 @@ local function on_player_selected_area(event)
     local selection_area = event.area
 
     local distance = euclidean_distance(selection_area.right_bottom.x, selection_area.left_top.x, selection_area.right_bottom.y, selection_area.left_top.y)
+    player.print("Calculated distance: " .. distance)
+    player.print("Player reach distance: " .. player.reach_distance)
+    player.clear_selection()
+
+    player.print("Calculated distance2: " .. distance)
+
+
+
     if distance > player.reach_distance then
         player.print{"msd.too_far"}
         return
     else
         handle_gui(player, event)
-    return
     end
 end
 
@@ -77,6 +84,9 @@ local function handle_shortcut(event)
 
     -- Upon selection, pass to selection handler
     script.on_event(defines.events.on_player_selected_area, on_player_selected_area)
+
+    -- need to clear the selection or it will try and double the distance
+    game.players[event.player_index].clear_selection()
 end
 
 -- If shortcut is hit, handle event
