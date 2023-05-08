@@ -17,6 +17,7 @@ local function mine_area(player, selection_event)
 
     for key, entity in pairs(player.surface.find_entities_filtered{area=selection_event.area}) do
             player.mine_entity(entity, true)
+            player.clear_selected_entity()
     end
 end
 
@@ -65,12 +66,12 @@ local function on_player_selected_area(event)
     player.print("Calculated distance2: " .. distance)
 
 
-
     if distance > player.reach_distance then
         player.print{"msd.too_far"}
         return
     else
         handle_gui(player, event)
+        return
     end
 end
 
@@ -84,9 +85,6 @@ local function handle_shortcut(event)
 
     -- Upon selection, pass to selection handler
     script.on_event(defines.events.on_player_selected_area, on_player_selected_area)
-
-    -- need to clear the selection or it will try and double the distance
-    game.players[event.player_index].clear_selection()
 end
 
 -- If shortcut is hit, handle event
